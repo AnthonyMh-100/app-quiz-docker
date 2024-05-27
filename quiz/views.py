@@ -11,10 +11,8 @@ from .models import Product
 
 def view_generate_pdf(request):
     
-    del request.session['cart']
-    
+    del request.session['cart']    
     return redirect('app:view_home')
-    pass
 
 def redirect_login(request):
     return redirect('app:view_login')
