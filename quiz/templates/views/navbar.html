@@ -1,0 +1,15 @@
+<header class="bg-gray-800 text-gray-200 shadow-md">
+    <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+      <div>
+        <a href="{% url 'app:view_home' %}" class="text-2xl font-bold text-white mb-4">Home</a>
+      </div>
+      <div class="flex space-x-4">
+        <a href="{% url 'app:view_cart' %}" class="hover:text-gray-400">Mi carrito</a>
+        <a href="{% url 'app:view_logout' %}" class="hover:text-gray-400">Logout</a>
+        {% if request.user and request.user.is_authenticated %}
+          <p>{{ request.user.username|default:request.user.email }}</p>
+        {% endif %}
+        <a href="#" class="hover:text-gray-400">Profile</a>
+      </div>
+    </div>
+</header>

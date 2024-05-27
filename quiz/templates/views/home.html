@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block home %}
+  <div class="bg-gray-900 text-gray-200 min-h-screen flex flex-col">
+    <!-- Navbar -->
+  
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+
+    <div class="text-center font-bold text-white text-4xl">Encuentra tu Producto</div>
+
+    <form method="POST" action="{% url 'app:view_search_product' %}" class="flex justify-center w-full mx-auto mt-4">
+      {% csrf_token %}
+      <div>
+        <input type="text" name="search" placeholder="Buscar productos..." class="bg-gray-700 text-white px-3 py-1 w-80 rounded-md focus:outline-none focus:ring focus:ring-gray-400" />
+        <button type="submit" class="ml-2 bg-gray-700 text-white px-4 py-1 rounded-md hover:bg-gray-600">Buscar</button>
+      </div>
+    </form>
+
+    <div class="mt-8">
+      <nav class="flex justify-end px-10">
+        <ul class="flex justify-end items-end  gap-4">
+          <!-- Botón Anterior -->
+          <li>
+            {% if products.has_previous %}
+              <a href="?page={{ products.previous_page_number }}" class="py-2 px-3 leading-tight text-gray-400 bg-gray-800 border border-gray-700 hover:bg-gray-700 hover:text-white">Anterior</a>
+            {% else %}
+              <span class="py-2 px-3 leading-tight text-gray-400 bg-gray-800 border border-gray-700 opacity-50 cursor-not-allowed">Anterior</span>
+            {% endif %}
+          </li>
+          <li>{{ products.number }}</li>
+
+          <li>
+            {% if products.has_next %}
+            <a href="?page={{ products.next_page_number }}" class="py-2 px-3 leading-tight text-gray-400 bg-gray-800 border border-gray-700 hover:bg-gray-700 hover:text-white">Siguiente</a>
+            {% else %}
+            <span class="py-2 px-3 leading-tight text-gray-400 bg-gray-800 border border-gray-700 opacity-50 cursor-not-allowed">Siguiente</span>
+            {% endif %}
+          </li>
+          <li>Total : {{ products.paginator.num_pages }}</li>
+        </ul>
+      </nav>
+    </div>
+
+
+
+    <div class="container mx-auto my-8 flex grid grid-cols-4 gap-4">
+      <!-- Sección de productos -->
+      {% for product in products %}
+        <div class="">
+          <!-- Ejemplo de tarjeta de producto -->
+          <div class="bg-gray-800 rounded-lg p-4 flex flex-col items-center">
+            <img src="{{ product.imagen.url }}" alt="Producto 1" class="w-48 h-48 object-cover rounded" />
+            <h2 class="text-xl font-semibold mt-2 text-center truncate">{{ product.name }}</h2>
+            <p class="text-gray-400 text-sm text-center overflow-hidden">{{ product.description }}</p>
+            <p class="text-gray-300 mt-2 text-center">${{ product.price }}</p>
+            <form method="POST" class="w-full mt-4" action="{% url 'app:view_home' %}">
+              {% csrf_token %}
+              <div class="flex items-center justify-center">
+                <label for="quantity" class="mr-2">Cantidad:</label>
+                <input type="number" id="quantity" name="quantity" min="1" value="1" class="w-16 bg-gray-700 text-white text-center rounded-md focus:outline-none focus:ring focus:ring-gray-400" />
+                <input type="hidden" name="product_id" value="{{ product.id }}" />
+              </div>
+              <button type="submit" class="bg-gray-700 text-white w-full py-2 mt-4 rounded-md hover:bg-gray-600">Añadir al carrito</button>
+            </form>
+          </div>
+        </div>
+      {% empty %}
+      <div class="text-center font-bold text-white text-2xl">No hay Productos</div>
+      {% endfor %}
+      
+    </div>
+  </div>
+{% endblock %}
